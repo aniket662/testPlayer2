@@ -12,11 +12,22 @@ public class SpawnPlayers : MonoBehaviourPunCallbacks
     public float minY;
     public float maxY;
 
-    public override void OnJoinedRoom()
+    void Start()
     {
-        if (PhotonNetwork.IsMasterClient)
+        // Check if connected to Photon and if this client is the master client
+        if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
         {
             // Spawn the player prefab for the master client
+            SpawnPlayer();
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        // Check if this client is not the master client
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            // Spawn the player prefab for the second player
             SpawnPlayer();
         }
     }
@@ -27,17 +38,6 @@ public class SpawnPlayers : MonoBehaviourPunCallbacks
         Vector2 randomPosition = new Vector2(Random.Range(minX, maxX), Random.Range(minY, maxY));
 
         // Instantiate the player prefab
-        GameObject player = PhotonNetwork.Instantiate(playerPrefab.name, randomPosition, Quaternion.identity);
-        
-        // Ensure that the local client owns the PhotonView of the player object
-        PhotonView pv = player.GetComponent<PhotonView>();
-        pv.TransferOwnership(PhotonNetwork.LocalPlayer);
-    }
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        if(!PhotonNetwork.IsMasterClient){
-            SpawnPlayer();
-        }
+        PhotonNetwork.Instantiate(playerPrefab.name, randomPosition, Quaternion.identity);
     }
 }
-
