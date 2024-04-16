@@ -105,32 +105,34 @@ public class MoveBehaviour : GenericBehaviour
 	// Deal with the basic player movement
 	void MovementManagement(float horizontal, float vertical)
 	{
-		// On ground, obey gravity.
-		if (behaviourManager.IsGrounded())
-			behaviourManager.GetRigidBody.useGravity = true;
+		if(view.IsMine){
+				// On ground, obey gravity.
+			if (behaviourManager.IsGrounded())
+				behaviourManager.GetRigidBody.useGravity = true;
 
-		// Avoid takeoff when reached a slope end.
-		else if (!behaviourManager.GetAnim.GetBool(jumpBool) && behaviourManager.GetRigidBody.velocity.y > 0)
-		{
-			RemoveVerticalVelocity();
-		}
+			// Avoid takeoff when reached a slope end.
+			else if (!behaviourManager.GetAnim.GetBool(jumpBool) && behaviourManager.GetRigidBody.velocity.y > 0)
+			{
+				RemoveVerticalVelocity();
+			}
 
-		// Call function that deals with player orientation.
-		Rotating(horizontal, vertical);
+			// Call function that deals with player orientation.
+			Rotating(horizontal, vertical);
 
-		// Set proper speed.
-		Vector2 dir = new Vector2(horizontal, vertical);
-		speed = Vector2.ClampMagnitude(dir, 1f).magnitude;
-		// This is for PC only, gamepads control speed via analog stick.
-		speedSeeker += Input.GetAxis("Mouse ScrollWheel");
-		speedSeeker = Mathf.Clamp(speedSeeker, walkSpeed, runSpeed);
-		speed *= speedSeeker;
-		if (behaviourManager.IsSprinting())
-		{
-			speed = sprintSpeed;
-		}
+			// Set proper speed.
+			Vector2 dir = new Vector2(horizontal, vertical);
+			speed = Vector2.ClampMagnitude(dir, 1f).magnitude;
+			// This is for PC only, gamepads control speed via analog stick.
+			speedSeeker += Input.GetAxis("Mouse ScrollWheel");
+			speedSeeker = Mathf.Clamp(speedSeeker, walkSpeed, runSpeed);
+			speed *= speedSeeker;
+			if (behaviourManager.IsSprinting())
+			{
+				speed = sprintSpeed;
+			}
 
-		behaviourManager.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);
+			behaviourManager.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);
+			}
 	}
 
 	// Remove vertical rigidbody velocity.
